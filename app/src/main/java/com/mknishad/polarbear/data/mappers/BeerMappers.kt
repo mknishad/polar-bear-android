@@ -1,27 +1,23 @@
 package com.mknishad.polarbear.data.mappers
 
-import com.mknishad.polarbear.data.local.BeerEntity
-import com.mknishad.polarbear.data.remote.BeerDto
-import com.mknishad.polarbear.domain.Beer
+import com.mknishad.polarbear.data.local.UserEntity
+import com.mknishad.polarbear.data.remote.UserDto
+import com.mknishad.polarbear.domain.User
 
-fun BeerDto.toBeerEntity(): BeerEntity {
-  return BeerEntity(
+fun UserDto.toUserEntity(): UserEntity {
+  return UserEntity(
     id = id,
     name = name,
-    tagline = tagline,
-    description = description,
-    firstBrewed = first_brewed,
-    imageUrl = image_url
+    login = login,
+    avatarUrl = avatar_url
   )
 }
 
-fun BeerEntity.toBeer(): Beer {
-  return Beer(
+fun UserEntity.toUser(): User {
+  return User(
     id = id,
     name = name,
-    tagline = tagline,
-    description = description,
-    firstBrewed = firstBrewed,
-    imageUrl = imageUrl
+    login = login,
+    avatarUrl = avatarUrl
   )
 }

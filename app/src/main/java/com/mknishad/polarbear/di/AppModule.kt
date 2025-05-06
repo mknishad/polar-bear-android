@@ -5,10 +5,11 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Room
-import com.mknishad.polarbear.data.local.BeerDatabase
-import com.mknishad.polarbear.data.local.BeerEntity
-import com.mknishad.polarbear.data.remote.BeerApi
-import com.mknishad.polarbear.data.remote.BeerRemoteMediator
+import com.mknishad.polarbear.BuildConfig
+import com.mknishad.polarbear.data.local.UserDatabase
+import com.mknishad.polarbear.data.local.UserEntity
+import com.mknishad.polarbear.data.remote.UserApi
+import com.mknishad.polarbear.data.remote.UserRemoteMediator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,52 +25,48 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
   @Provides
   @Singleton
-  fun provideBeerDatabase(@ApplicationContext context: Context): BeerDatabase {
+  fun provideUserDatabase(@ApplicationContext context: Context): UserDatabase {
     return Room.databaseBuilder(
-      context,
-      BeerDatabase::class.java,
-      "beers.db"
+      context, UserDatabase::class.java, "user.db"
     ).build()
   }
 
   @Provides
   @Singleton
-  fun provideLoggingInterceptor() = HttpLoggingInterceptor().apply {
-    level = HttpLoggingInterceptor.Level.BODY
-  }
+  fun provideUserApi(): UserApi {
 
-  @Provides
-  @Singleton
-  fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-    OkHttpClient.Builder().addInterceptor(loggingInterceptor)
-      .build()
+    val authInterceptor = Interceptor { chain ->
+      val req = chain.request()
+      val requestHeaders =
+        req.newBuilder().addHeader("Authorization", "Bearer ${BuildConfig.API_KEY}").build()
+      chain.proceed(requestHeaders)
+    }
 
-  @Provides
-  @Singleton
-  fun provideBeerApi(okHttpClient: OkHttpClient): BeerApi {
-    return Retrofit.Builder()
-      .baseUrl(BeerApi.BASE_URL)
-      .addConverterFactory(GsonConverterFactory.create())
-      .client(okHttpClient)
-      .build()
-      .create(BeerApi::class.java)
+    val loggingInterceptor = HttpLoggingInterceptor().apply {
+      level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    val httpClient =
+      OkHttpClient.Builder().addInterceptor(authInterceptor).addInterceptor(loggingInterceptor)
+        .build()
+
+    return Retrofit.Builder().baseUrl(UserApi.BASE_URL)
+      .addConverterFactory(GsonConverterFactory.create()).client(httpClient).build()
+      .create(UserApi::class.java)
   }
 
   @OptIn(ExperimentalPagingApi::class)
   @Provides
   @Singleton
-  fun provideBeerPager(beerDb: BeerDatabase, beerApi: BeerApi): Pager<Int, BeerEntity> {
+  fun provideUserPager(userDb: UserDatabase, userApi: UserApi): Pager<Int, UserEntity> {
     return Pager(
       config = PagingConfig(pageSize = 20),
-      remoteMediator = BeerRemoteMediator(
-        beerDb = beerDb,
-        beerApi = beerApi
-      ),
+      remoteMediator = UserRemoteMediator(userDb = userDb, userApi = userApi),
       pagingSourceFactory = {
-        beerDb.dao.pagingSource()
-      }
-    )
+        userDb.dao.pagingSource()
+      })
   }
 }

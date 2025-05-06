@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
@@ -16,7 +18,10 @@ android {
     targetSdk = 35
     versionCode = 1
     versionName = "1.0"
-
+    val p = Properties()
+    p.load(project.rootProject.file("local.properties").reader())
+    val apiKey: String = p.getProperty("apiKey")
+    buildConfigField("String", "API_KEY", apiKey)
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -35,6 +40,7 @@ android {
   }
   buildFeatures {
     compose = true
+    buildConfig = true
   }
 }
 

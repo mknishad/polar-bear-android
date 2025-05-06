@@ -6,13 +6,13 @@ import androidx.room.Query
 import androidx.room.Upsert
 
 @Dao
-interface BeerDao {
+interface UserDao {
   @Upsert
-  suspend fun upsertAll(beers: List<BeerEntity>)
+  suspend fun upsertAll(users: List<UserEntity>)
 
-  @Query("SELECT * FROM BeerEntity")
-  fun pagingSource(): PagingSource<Int, BeerEntity>
+  @Query("SELECT * FROM UserEntity")
+  fun pagingSource(): PagingSource<Int, UserEntity>
 
-  @Query("DELETE FROM BeerEntity")
+  @Query("DELETE FROM UserEntity")
   suspend fun clearAll()
 }

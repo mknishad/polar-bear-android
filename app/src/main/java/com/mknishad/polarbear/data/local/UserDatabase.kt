@@ -4,9 +4,9 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-  entities = [BeerEntity::class],
+  entities = [UserEntity::class],
   version = 1
 )
-abstract class BeerDatabase: RoomDatabase() {
-  abstract val dao: BeerDao
+abstract class UserDatabase: RoomDatabase() {
+  abstract val dao: UserDao
 }
