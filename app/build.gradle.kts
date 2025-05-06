@@ -57,7 +57,6 @@ dependencies {
   debugImplementation(libs.androidx.ui.test.manifest)
   implementation(libs.coroutines.core)
   implementation(libs.coroutines.android)
-  //implementation(libs.coroutines.lifecycle.runtime)
   implementation(libs.coroutines.lifecycle.viewmodel)
   implementation(libs.dagger.hilt.android)
   ksp(libs.dagger.hilt.android.compiler)
@@ -72,6 +71,7 @@ dependencies {
   implementation(libs.room.runtime)
   ksp(libs.room.compiler)
   implementation(libs.room.ktx)
+  implementation(libs.room.paging)
   implementation(libs.paging.runtime)
   implementation(libs.paging.compose)
 }

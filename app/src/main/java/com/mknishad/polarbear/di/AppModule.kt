@@ -14,6 +14,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -33,10 +36,23 @@ class AppModule {
 
   @Provides
   @Singleton
-  fun provideBeerApi(): BeerApi {
+  fun provideLoggingInterceptor() = HttpLoggingInterceptor().apply {
+    level = HttpLoggingInterceptor.Level.BODY
+  }
+
+  @Provides
+  @Singleton
+  fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    OkHttpClient.Builder().addInterceptor(loggingInterceptor)
+      .build()
+
+  @Provides
+  @Singleton
+  fun provideBeerApi(okHttpClient: OkHttpClient): BeerApi {
     return Retrofit.Builder()
       .baseUrl(BeerApi.BASE_URL)
       .addConverterFactory(GsonConverterFactory.create())
+      .client(okHttpClient)
       .build()
       .create(BeerApi::class.java)
   }

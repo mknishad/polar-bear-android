@@ -1,6 +1,6 @@
 [versions]
 agp = "8.9.2"
-kotlin = "2.0.21"
+kotlin = "2.1.20"
 ksp = "2.1.20-2.0.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -63,6 +63,7 @@ coil-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versio
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 
 # Paging
 paging-runtime = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging"}
